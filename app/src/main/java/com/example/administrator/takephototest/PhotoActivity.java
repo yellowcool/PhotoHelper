@@ -29,7 +29,7 @@ public abstract class PhotoActivity extends AppCompatActivity implements OpenPho
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        photosHelper = new OpenPhotosHelper(this,this);
+        photosHelper = new OpenPhotosHelper(this,this,null);
         initView(savedInstanceState);
         loadData();
     }

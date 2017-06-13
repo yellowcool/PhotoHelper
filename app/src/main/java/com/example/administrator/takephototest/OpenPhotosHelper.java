@@ -13,6 +13,7 @@ import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -40,10 +41,14 @@ public class OpenPhotosHelper {
      */
     public static final int CHOOSE_PHOTOS = 12;
     private Uri imageUri;
+    private Fragment fragment;
 
-    public OpenPhotosHelper(OnSelectPhotosListener selectPhotosListener, Activity activity) {
+    public OpenPhotosHelper(OnSelectPhotosListener selectPhotosListener, Activity activity, Fragment fragment) {
         this.selectPhotosListener = selectPhotosListener;
         this.activity = activity;
+        if (fragment != null) {
+            this.fragment = fragment;
+        }
     }
 
     /**
@@ -74,7 +79,11 @@ public class OpenPhotosHelper {
                 } else {
                     Intent intent = new Intent("android.intent.action.GET_CONTENT");
                     intent.setType("image/*");
-                    activity.startActivityForResult(intent, CHOOSE_PHOTOS);
+                    if (fragment==null) {
+                        activity.startActivityForResult(intent, CHOOSE_PHOTOS);
+                    }else {
+                        fragment.startActivityForResult(intent,CHOOSE_PHOTOS);
+                    }
                 }
                 pictureDialog.dismiss();
             }
@@ -82,6 +91,7 @@ public class OpenPhotosHelper {
         builder.setView(view);
         pictureDialog = builder.show();
     }
+
     /**
      * 开启相机，并保存图片
      */
@@ -95,8 +105,13 @@ public class OpenPhotosHelper {
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivityForResult(intent, TAKE_CAMERA);
+        if (fragment==null) {
+            activity.startActivityForResult(intent, TAKE_CAMERA);
+        }else {
+            fragment.startActivityForResult(intent,TAKE_CAMERA);
+        }
     }
+
     /**
      * 获取图片真实路径
      *
@@ -172,7 +187,6 @@ public class OpenPhotosHelper {
     }
 
 
-
     /**
      * 处理选择的图片回调接口
      */
@@ -197,7 +211,7 @@ public class OpenPhotosHelper {
      * 防止内存泄漏
      */
     public void destroy() {
-        if (activity!=null){
+        if (activity != null) {
             activity = null;
         }
     }

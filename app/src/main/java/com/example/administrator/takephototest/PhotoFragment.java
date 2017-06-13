@@ -28,13 +28,13 @@ public abstract class PhotoFragment extends Fragment implements OpenPhotosHelper
      * 从相册获取照片
      */
     public static final int CHOOSE_PHOTOS = 12;
-    private OpenPhotosHelper photosHelper;
+    protected OpenPhotosHelper photosHelper;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        photosHelper = new OpenPhotosHelper(this,getActivity());
+        photosHelper = new OpenPhotosHelper(this,getActivity(),this);
         View view = initView(inflater, container, savedInstanceState);
         loadData();
         return view;
